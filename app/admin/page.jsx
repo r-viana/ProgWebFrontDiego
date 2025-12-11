@@ -1,62 +1,140 @@
-'use client'
-import { dummyAdminDashboardData } from "@/assets/assets"
-import Loading from "@/components/Loading"
-import OrdersAreaChart from "@/components/OrdersAreaChart"
-import { CircleDollarSignIcon, ShoppingBasketIcon, StoreIcon, TagsIcon } from "lucide-react"
-import { useEffect, useState } from "react"
+"use client";
+import { useState } from "react";
 
-export default function AdminDashboard() {
+export default function CreateCategory() {
+  const [category, setCategory] = useState({
+    name: "",
+    type: "",
+    description: "",
+    status: "",
+  });
 
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
+  const existingCategories = [
+    { name: "Iniciante", description: "10", status: "Azul" },
+    { name: "Intermediário", description: "20", status: "Verde" },
+  ];
 
-    const [loading, setLoading] = useState(true)
-    const [dashboardData, setDashboardData] = useState({
-        products: 0,
-        revenue: 0,
-        orders: 0,
-        stores: 0,
-        allOrders: [],
-    })
+  const handleChange = (field, value) => {
+    setCategory({ ...category, [field]: value });
+  };
 
-    const dashboardCardsData = [
-        { title: 'Total Products', value: dashboardData.products, icon: ShoppingBasketIcon },
-        { title: 'Total Revenue', value: currency + dashboardData.revenue, icon: CircleDollarSignIcon },
-        { title: 'Total Orders', value: dashboardData.orders, icon: TagsIcon },
-        { title: 'Total Stores', value: dashboardData.stores, icon: StoreIcon },
-    ]
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    const fetchDashboardData = async () => {
-        setDashboardData(dummyAdminDashboardData)
-        setLoading(false)
+    if (!category.name.trim()) {
+      alert("Por favor, preencha o campo Nome.");
+      return;
+    }
+    if (!category.type.trim()) {
+      alert("Por favor, preencha o campo Descrição.");
+      return;
+    }
+    if (!category.description.trim()) {
+      alert("Por favor, preencha o campo Pontuação.");
+      return;
+    }
+    if (!category.status.trim()) {
+      alert("Por favor, preencha o campo Cor.");
+      return;
     }
 
-    useEffect(() => {
-        fetchDashboardData()
-    }, [])
+    if (
+      existingCategories.some(
+        (c) => c.name.toLowerCase() === category.name.toLowerCase()
+      )
+    ) {
+      alert("Já existe um nível com este Nome.");
+      return;
+    }
 
-    if (loading) return <Loading />
+    if (
+      existingCategories.some(
+        (c) =>
+          c.description.toLowerCase() === category.description.toLowerCase()
+      )
+    ) {
+      alert("Já existe um nível com esta Pontuação.");
+      return;
+    }
 
-    return (
-        <div className="text-slate-500">
-            <h1 className="text-2xl">Admin <span className="text-slate-800 font-medium">Dashboard</span></h1>
+    if (
+      existingCategories.some(
+        (c) => c.status.toLowerCase() === category.status.toLowerCase()
+      )
+    ) {
+      alert("Já existe um nível com esta Cor.");
+      return;
+    }
 
-            {/* Cards */}
-            <div className="flex flex-wrap gap-5 my-10 mt-4">
-                {
-                    dashboardCardsData.map((card, index) => (
-                        <div key={index} className="flex items-center gap-10 border border-slate-200 p-3 px-6 rounded-lg">
-                            <div className="flex flex-col gap-3 text-xs">
-                                <p>{card.title}</p>
-                                <b className="text-2xl font-medium text-slate-700">{card.value}</b>
-                            </div>
-                            <card.icon size={50} className=" w-11 h-11 p-2.5 text-slate-400 bg-slate-100 rounded-full" />
-                        </div>
-                    ))
-                }
-            </div>
+    console.log("Categoria criada:", category);
+    alert("Nível criado com sucesso!");
 
-            {/* Area Chart */}
-            <OrdersAreaChart allOrders={dashboardData.allOrders} />
+    setCategory({
+      name: "",
+      type: "",
+      description: "",
+      status: "",
+    });
+  };
+
+  return (
+    <div className="p-12 text-black w-full max-w-3xl">
+      <h1 className="text-3xl font-semibold mb-10">Criar níveis usuários</h1>
+
+      <h2 className="text-lg mb-8">Criar níveis</h2>
+
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div>
+          <label className="block text-sm font-medium mb-2">Nome</label>
+          <input
+            type="text"
+            value={category.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            placeholder="Informe o nome"
+            className="w-full border border-gray-300 rounded-full px-4 py-2 text-sm outline-none"
+          />
         </div>
-    )
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Descrição</label>
+          <input
+            type="text"
+            value={category.type}
+            onChange={(e) => handleChange("type", e.target.value)}
+            placeholder="Informe a descrição"
+            className="w-full border border-gray-300 rounded-full px-4 py-2 text-sm outline-none"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Pontuação</label>
+          <input
+            type="text"
+            value={category.description}
+            onChange={(e) => handleChange("description", e.target.value)}
+            placeholder="Informe a pontuação"
+            className="w-full border border-gray-300 rounded-full px-4 py-2 text-sm outline-none"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Cor</label>
+          <input
+            type="text"
+            value={category.status}
+            onChange={(e) => handleChange("status", e.target.value)}
+            placeholder="Informe a cor"
+            className="w-full border border-gray-300 rounded-full px-4 py-2 text-sm outline-none"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-cyan-400 text-white py-2 rounded-full text-center hover:bg-cyan-500 transition"
+        >
+          Ok
+        </button>
+      </form>
+    </div>
+  );
 }
