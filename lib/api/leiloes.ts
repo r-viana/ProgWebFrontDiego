@@ -1,63 +1,119 @@
-import { apiClient } from './client';
 import {
+  ApiResponse,
+  AtualizarLeilaoInput,
+  CriarLeilaoInput,
   Leilao,
-  CreateLeilaoDto,
-  UpdateLeilaoDto,
-  FiltroLeilaoDto,
-  PaginatedResponse,
-} from '@/types';
+  ListarLeiloesParams,
+  Paginated,
+} from "../types/leilao";
 
-export const leiloesApi = {
-  getAll: async (filtros: FiltroLeilaoDto = {}) => {
-    const response = await apiClient.get<PaginatedResponse<Leilao>>(
-      '/leiloes',
-      { params: filtros }
-    );
-    return response.data;
-  },
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-  getById: async (id: number) => {
-    const response = await apiClient.get<{ data: Leilao }>(
-      `/leiloes/${id}`
-    );
-    return response.data.data;
-  },
+function buildQuery(params: Record<string, unknown>) {
+  const sp = new URLSearchParams();
+  for (const [k, v] of Object.entries(params)) {
+    if (v === undefined || v === null || v === "") continue;
+    sp.set(k, String(v));
+  }
+  const qs = sp.toString();
+  return qs ? `?${qs}` : "";
+}
 
-  create: async (data: CreateLeilaoDto) => {
-    const response = await apiClient.post<{ data: Leilao; message: string }>(
-      '/leiloes',
-      data
-    );
-    return response.data.data;
-  },
+async function parseJsonSafe(res: Response) {
+  const text = await res.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    return { message: text };
+  }
+}
 
-  update: async (id: number, data: UpdateLeilaoDto) => {
-    const response = await apiClient.patch<{ data: Leilao; message: string }>(
-      `/leiloes/${id}`,
-      data
-    );
-    return response.data.data;
-  },
+function extractErrorMessage(payload: any): string {
+  if (!payload) return "Erro desconhecido";
+  if (Array.isArray(payload.message)) return payload.message.join(", ");
+  if (typeof payload.message === "string") return payload.message;
+  if (typeof payload.error === "string") return payload.error;
+  return "Erro ao processar requisição";
+}
 
-  darLance: async (id: number, valor: number) => {
-    const response = await apiClient.post<{ data: Leilao; message: string }>(
-      `/leiloes/${id}/lance`,
-      { valor }
-    );
-    return response.data.data;
-  },
+export async function listarLeiloes(
+  params: ListarLeiloesParams = {}
+): Promise<Paginated<Leilao>> {
+  const qs = buildQuery({ page: 1, limit: 20, ...params });
+  const res = await fetch(`${API_URL}/leiloes${qs}`, { cache: "no-store" });
+  const payload = await parseJsonSafe(res);
 
-  encerrar: async (id: number) => {
-    const response = await apiClient.post<{ data: Leilao; message: string }>(
-      `/leiloes/${id}/encerrar`
-    );
-    return response.data.data;
-  },
+  if (!res.ok) {
+    throw new Error(extractErrorMessage(payload));
+  }
 
-  delete: async (id: number) => {
-    const response = await apiClient.delete<{ message: string }>(
-      `/leiloes/${id}`
-    );
-    return response.data;
-  },
-};
+  const items: Leilao[] = Array.isArray(payload)
+    ? payload
+    : (payload.items as Leilao[]) || (payload.data as Leilao[]) || [];
+
+  return {
+    items,
+    total: payload.total,
+    page: payload.page,
+    limit: payload.limit,
+  };
+}
+
+export async function buscarLeilao(id: string): Promise<Leilao> {
+  const res = await fetch(`${API_URL}/leiloes/${id}`, { cache: "no-store" });
+  const payload = await parseJsonSafe(res);
+
+  if (!res.ok) {
+    throw new Error(extractErrorMessage(payload));
+  }
+
+  const leilao: Leilao = (payload.data as Leilao) || (payload as Leilao);
+  return leilao;
+}
+
+export async function criarLeilao(input: CriarLeilaoInput): Promise<Leilao> {
+  const res = await fetch(`${API_URL}/leiloes`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  const payload: ApiResponse<Leilao> = await parseJsonSafe(res);
+
+  if (!res.ok) {
+    throw new Error(extractErrorMessage(payload));
+  }
+
+  return (payload.data as Leilao) || (payload as any);
+}
+
+export async function atualizarLeilao(
+  id: string,
+  input: AtualizarLeilaoInput
+): Promise<Leilao> {
+  const res = await fetch(`${API_URL}/leiloes/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  const payload: ApiResponse<Leilao> = await parseJsonSafe(res);
+
+  if (!res.ok) {
+    throw new Error(extractErrorMessage(payload));
+  }
+
+  return (payload.data as Leilao) || (payload as any);
+}
+
+export async function excluirLeilao(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/leiloes/${id}`, {
+    method: "DELETE",
+  });
+
+  const payload = await parseJsonSafe(res);
+
+  if (!res.ok) {
+    throw new Error(extractErrorMessage(payload));
+  }
+}
