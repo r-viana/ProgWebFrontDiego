@@ -57,22 +57,32 @@ export interface FiltroUserDto {
 
 // ==================== NIVEL USUARIO ====================
 export interface NivelUsuario {
+  mensagem: string;
   id: number;
   nome: string;
-  descricao?: string;
+  descricao: string;
+  pontuacaoMinima: number;
+  corIdentificacao: string;
+  id_cor: number;
   created_at?: string;
   updated_at?: string;
 }
 
 export interface CreateNivelUsuarioDto {
   nome: string;
-  descricao?: string;
+  descricao: string;
+  pontuacaoMinima: number;
+  corIdentificacao: string;
+  id_cor: number;
 }
 
 export interface UpdateNivelUsuarioDto {
   nome?: string;
   descricao?: string;
-}
+  pontuacaoMinima?: number;
+  corIdentificacao?: string;
+  id_cor?: number;
+
 
 // ==================== CARTA ====================
 export interface Carta {
@@ -152,39 +162,52 @@ export interface FiltroCartaDto {
 export interface CategoriaCartas {
   id: number;
   nome: string;
-  descricao?: string;
+  descricao: string;
+  tipo: string;
+  status: string;
   created_at?: string;
   updated_at?: string;
 }
 
 export interface CreateCategoriaCartasDto {
   nome: string;
-  descricao?: string;
+  descricao: string;
+  tipo: string;
+  status: string;
 }
 
 export interface UpdateCategoriaCartasDto {
   nome?: string;
   descricao?: string;
+  tipo?: string;
+  status?: string;
 }
 
 // ==================== CATEGORIA LEILAO ====================
 export interface CategoriaLeilao {
   id: number;
   nome: string;
-  descricao?: string;
+  descricao: string;
+  tipo: string;
+  status: string;
   created_at?: string;
   updated_at?: string;
 }
 
 export interface CreateCategoriaLeilaoDto {
   nome: string;
-  descricao?: string;
+  descricao: string;
+  tipo: string;
+  status: string;
 }
 
 export interface UpdateCategoriaLeilaoDto {
   nome?: string;
   descricao?: string;
+  tipo?: string;
+  status?: string;
 }
+
 
 // ==================== ANUNCIO VENDA ====================
 export interface AnuncioVendaCarta {
@@ -451,3 +474,4 @@ export interface LoginResponse {
   access_token: string;
   user: User;
 }
+
