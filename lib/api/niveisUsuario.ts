@@ -1,41 +1,48 @@
-import { apiClient } from './client';
-import { NivelUsuario, CreateNivelUsuarioDto, UpdateNivelUsuarioDto } from '@/types';
+import { apiClient } from "./client";
+import {
+  NivelUsuario,
+  CreateNivelUsuarioDto,
+  UpdateNivelUsuarioDto,
+} from "@/types";
 
 export const niveisUsuarioApi = {
-  getAll: async () => {
-    const response = await apiClient.get<{ data: NivelUsuario[] }>(
-      '/niveis-usuario'
+  getAll: async (params?: {
+    nome?: string;
+    corIdentificacao?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const response = await apiClient.get<{ dados: NivelUsuario[] }>(
+      "/NivelUsuario",
+      { params }
     );
-    return response.data.data;
+    return response.data.dados;
   },
 
   getById: async (id: number) => {
-    const response = await apiClient.get<{ data: NivelUsuario }>(
-      `/niveis-usuario/${id}`
+    const response = await apiClient.get<{ dados: NivelUsuario }>(
+      `/NivelUsuario/${id}`
     );
-    return response.data.data;
+    return response.data.dados;
   },
 
   create: async (data: CreateNivelUsuarioDto) => {
-    const response = await apiClient.post<{ data: NivelUsuario; message: string }>(
-      '/niveis-usuario',
+    const response = await apiClient.post<{ dados: NivelUsuario }>(
+      "/NivelUsuario",
       data
     );
-    return response.data.data;
+    return response.data.dados;
   },
 
   update: async (id: number, data: UpdateNivelUsuarioDto) => {
-    const response = await apiClient.patch<{ data: NivelUsuario; message: string }>(
-      `/niveis-usuario/${id}`,
+    const response = await apiClient.put<{ dados: NivelUsuario }>(
+      `/NivelUsuario/${id}`,
       data
     );
-    return response.data.data;
+    return response.data.dados;
   },
 
   delete: async (id: number) => {
-    const response = await apiClient.delete<{ message: string }>(
-      `/niveis-usuario/${id}`
-    );
-    return response.data;
+    await apiClient.delete(`/NivelUsuario/${id}`);
   },
 };
