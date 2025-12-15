@@ -1,45 +1,47 @@
-import { apiClient } from './client';
+import { apiClient } from "./client";
 import {
   CategoriaLeilao,
   CreateCategoriaLeilaoDto,
   UpdateCategoriaLeilaoDto,
-} from '@/types';
+} from "@/types";
 
 export const categoriaLeilaoApi = {
-  getAll: async () => {
-    const response = await apiClient.get<{ data: CategoriaLeilao[] }>(
-      '/categoria-leilao'
-    );
-    return response.data.data;
+  getAll: async (params?: { nome?: string; page?: number; limit?: number }) => {
+    const response = await apiClient.get<{
+      data: CategoriaLeilao[];
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    }>("/CategoriaLeilao", { params });
+
+    return response.data;
   },
 
   getById: async (id: number) => {
-    const response = await apiClient.get<{ data: CategoriaLeilao }>(
-      `/categoria-leilao/${id}`
+    const response = await apiClient.get<{ dados: CategoriaLeilao }>(
+      `/CategoriaLeilao/${id}`
     );
-    return response.data.data;
+    return response.data.dados;
   },
 
   create: async (data: CreateCategoriaLeilaoDto) => {
-    const response = await apiClient.post<{ data: CategoriaLeilao; message: string }>(
-      '/categoria-leilao',
+    const response = await apiClient.post<{ dados: CategoriaLeilao }>(
+      "/CategoriaLeilao",
       data
     );
-    return response.data.data;
+    return response.data.dados;
   },
 
   update: async (id: number, data: UpdateCategoriaLeilaoDto) => {
-    const response = await apiClient.patch<{ data: CategoriaLeilao; message: string }>(
-      `/categoria-leilao/${id}`,
+    const response = await apiClient.put<{ dados: CategoriaLeilao }>(
+      `/CategoriaLeilao/${id}`,
       data
     );
-    return response.data.data;
+    return response.data.dados;
   },
 
   delete: async (id: number) => {
-    const response = await apiClient.delete<{ message: string }>(
-      `/categoria-leilao/${id}`
-    );
-    return response.data;
+    await apiClient.delete(`/CategoriaLeilao/${id}`);
   },
 };
