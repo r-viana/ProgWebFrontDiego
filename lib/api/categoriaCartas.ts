@@ -1,45 +1,52 @@
-import { apiClient } from './client';
+import { apiClient } from "./client";
 import {
   CategoriaCartas,
   CreateCategoriaCartasDto,
   UpdateCategoriaCartasDto,
-} from '@/types';
+} from "@/types";
 
 export const categoriaCartasApi = {
-  getAll: async () => {
-    const response = await apiClient.get<{ data: CategoriaCartas[] }>(
-      '/categoria-cartas'
-    );
-    return response.data.data;
+  getAll: async (params?: {
+    nome?: string;
+    tipo?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const response = await apiClient.get<{
+      data: CategoriaCartas[];
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    }>("/categoriaCartas", { params });
+
+    return response.data;
   },
 
   getById: async (id: number) => {
-    const response = await apiClient.get<{ data: CategoriaCartas }>(
-      `/categoria-cartas/${id}`
+    const response = await apiClient.get<{ dados: CategoriaCartas }>(
+      `/categoriaCartas/${id}`
     );
-    return response.data.data;
+    return response.data.dados;
   },
 
   create: async (data: CreateCategoriaCartasDto) => {
-    const response = await apiClient.post<{ data: CategoriaCartas; message: string }>(
-      '/categoria-cartas',
+    const response = await apiClient.post<{ dados: CategoriaCartas }>(
+      "/categoriaCartas",
       data
     );
-    return response.data.data;
+    return response.data.dados;
   },
 
   update: async (id: number, data: UpdateCategoriaCartasDto) => {
-    const response = await apiClient.patch<{ data: CategoriaCartas; message: string }>(
-      `/categoria-cartas/${id}`,
+    const response = await apiClient.put<{ dados: CategoriaCartas }>(
+      `/categoriaCartas/${id}`,
       data
     );
-    return response.data.data;
+    return response.data.dados;
   },
 
   delete: async (id: number) => {
-    const response = await apiClient.delete<{ message: string }>(
-      `/categoria-cartas/${id}`
-    );
-    return response.data;
+    await apiClient.delete(`/categoriaCartas/${id}`);
   },
 };
