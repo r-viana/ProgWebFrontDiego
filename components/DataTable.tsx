@@ -52,7 +52,7 @@ export function DataTable<T extends { id: number | string }>({
   const [showFilters, setShowFilters] = useState(false);
 
   const handleFilterChange = (key: string, value: any) => {
-    const novosF iltros = { ...filtroValues, [key]: value };
+    const novosFiltros = { ...filtroValues, [key]: value };
     setFiltroValues(novosFiltros);
     if (onFilterChange) {
       onFilterChange(novosFiltros);

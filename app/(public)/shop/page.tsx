@@ -3,7 +3,8 @@ import { Suspense, useEffect, useState } from "react"
 import ProductCard from "@/components/ProductCard"
 import { MoveLeftIcon } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { getAnunciosVenda, type AnuncioVenda } from "@/lib/api/anunciosVenda"
+import { getAnunciosVenda } from "@/lib/api/anunciosVenda"
+import { AnuncioVenda } from "@/types"
 import toast from "react-hot-toast"
 
 function ShopContent() {
@@ -158,8 +159,8 @@ function ShopContent() {
                                 storeId: anuncio.usuario_id.toString(),
                                 inStock: anuncio.quantidade_disponivel > 0,
                                 rating: [],
-                                createdAt: anuncio.created_at,
-                                updatedAt: anuncio.updated_at,
+                                createdAt: new Date(anuncio.created_at),
+                                updatedAt: new Date(anuncio.updated_at),
                             }}
                         />
                         );

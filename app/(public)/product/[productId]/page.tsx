@@ -82,8 +82,8 @@ export default function Product() {
         storeId: anuncio.usuario_id?.toString() || '',
         inStock: (anuncio.quantidade_disponivel || 0) > 0,
         rating: [], // Por enquanto vazio
-        createdAt: anuncio.created_at || new Date(),
-        updatedAt: anuncio.updated_at || new Date(),
+        createdAt: anuncio.created_at ? new Date(anuncio.created_at) : new Date(),
+        updatedAt: anuncio.updated_at ? new Date(anuncio.updated_at) : new Date(),
       };
 
       console.log('Product data:', productData);

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getMeusAnunciosVenda, deleteAnuncioVenda, updateAnuncioVenda, type AnuncioVenda } from "@/lib/api/anunciosVenda";
+import { getMeusAnunciosVenda, deleteAnuncioVenda, updateAnuncioVenda } from "@/lib/api/anunciosVenda";
+import { AnuncioVenda } from "@/types";
 import toast from "react-hot-toast";
 import { Trash2, Edit, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
