@@ -63,8 +63,9 @@ export default function Product() {
       }
 
       // Extrair imagens das cartas do anúncio
+      // Prioriza foto_url (foto enviada pelo usuário) sobre imagem_url (foto da carta)
       const cartaImages = anuncio.cartas
-        ?.map((c: any) => c.carta?.imagem_url)
+        ?.map((c: any) => c.foto_url || c.carta?.imagem_url)
         .filter((url: string) => url) || [];
 
       // Converter AnuncioVenda para Product
@@ -81,8 +82,8 @@ export default function Product() {
         storeId: anuncio.usuario_id?.toString() || '',
         inStock: (anuncio.quantidade_disponivel || 0) > 0,
         rating: [], // Por enquanto vazio
-        createdAt: anuncio.created_at || new Date(),
-        updatedAt: anuncio.updated_at || new Date(),
+        createdAt: anuncio.created_at ? new Date(anuncio.created_at) : new Date(),
+        updatedAt: anuncio.updated_at ? new Date(anuncio.updated_at) : new Date(),
       };
 
       console.log('Product data:', productData);

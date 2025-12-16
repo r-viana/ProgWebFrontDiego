@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { User, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
-import { getPropostasByAnuncio, acceptProposta, type Proposta } from "@/lib/api/propostas";
+import { getPropostasByAnuncio, acceptProposta } from "@/lib/api/propostas";
+import { Proposta } from "@/types";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import toast from "react-hot-toast";
@@ -22,7 +23,7 @@ const ListaPropostas: React.FC<ListaPropostasProps> = ({ productId, tipo = "vend
     try {
       setIsLoading(true);
       setError(null);
-      const data = await getPropostasByAnuncio(tipo, productId);
+      const data = await getPropostasByAnuncio(tipo, Number(productId));
       setPropostas(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Erro ao carregar propostas:", err);

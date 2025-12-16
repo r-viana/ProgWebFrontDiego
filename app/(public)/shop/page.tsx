@@ -3,7 +3,8 @@ import { Suspense, useEffect, useState } from "react"
 import ProductCard from "@/components/ProductCard"
 import { MoveLeftIcon } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { getAnunciosVenda, type AnuncioVenda } from "@/lib/api/anunciosVenda"
+import { getAnunciosVenda } from "@/lib/api/anunciosVenda"
+import { AnuncioVenda } from "@/types"
 import toast from "react-hot-toast"
 
 function ShopContent() {
@@ -135,15 +136,22 @@ function ShopContent() {
                     Todos os <span className="text-slate-700 font-medium">Produtos</span>
                 </h1>
                 <div className="grid grid-cols-2 sm:flex flex-wrap gap-6 xl:gap-12 mx-auto mb-32">
-                    {anuncios.map((anuncio) => (
+                    {anuncios.map((anuncio) => {
+                        // Extrair imagens das cartas (prioriza foto_url sobre imagem_url)
+                        const cartaImages = anuncio.cartas
+                            ?.map((c: any) => c.foto_url || c.carta?.imagem_url)
+                            .filter((url: string) => url) || [];
+
+                        return (
                         <ProductCard
                             key={anuncio.id}
                             product={{
                                 id: anuncio.id.toString(),
                                 name: anuncio.titulo,
                                 price: Number(anuncio.preco_total),
-                                // Usar imagens placeholder por enquanto (até integrar upload)
-                                images: ['/placeholder-product.png'],
+                                images: cartaImages.length > 0
+                                    ? cartaImages
+                                    : ['https://via.placeholder.com/400x400?text=Sem+Imagem'],
                                 // Dados adicionais necessários pelo ProductCard
                                 mrp: Number(anuncio.preco_total) * 1.2, // Preço com "desconto"
                                 category: 'Cartas',
@@ -151,11 +159,12 @@ function ShopContent() {
                                 storeId: anuncio.usuario_id.toString(),
                                 inStock: anuncio.quantidade_disponivel > 0,
                                 rating: [],
-                                createdAt: anuncio.created_at,
-                                updatedAt: anuncio.updated_at,
+                                createdAt: new Date(anuncio.created_at),
+                                updatedAt: new Date(anuncio.updated_at),
                             }}
                         />
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </div>

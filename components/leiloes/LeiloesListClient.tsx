@@ -204,7 +204,7 @@ export default function LeiloesListClient({ mode, title }: Props) {
                 </tr>
               ) : (
                 items.map((l) => {
-                  const editable = canEdit(l, { isAdmin, userId });
+                  const editable = canEdit(l, isAdmin ? 'admin' : 'user', userId || '');
                   return (
                     <tr key={l.id} className="border-t border-white/10">
                       <td className="px-4 py-3">

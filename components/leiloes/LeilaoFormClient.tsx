@@ -61,7 +61,7 @@ export default function LeilaoFormClient({ mode, action }: Props) {
         return;
       }
 
-      const editable = canEdit(item, { isAdmin, userId });
+      const editable = canEdit(item, isAdmin ? 'admin' : 'user', userId || '');
       if (!editable) {
         setError('Você não tem permissão para editar este leilão.');
         setLoadingItem(false);
@@ -110,8 +110,6 @@ export default function LeilaoFormClient({ mode, action }: Props) {
           descricao,
           precoInicial: Number(precoInicial),
           terminaEm: toIsoFromLocalDateTime(terminaEm),
-          ownerId: userId,
-          ownerNome: userNome,
         });
       } else {
         if (!id) throw new Error('ID inválido');
@@ -119,7 +117,6 @@ export default function LeilaoFormClient({ mode, action }: Props) {
           titulo,
           descricao,
           precoInicial: Number(precoInicial),
-          precoAtual: Number(precoAtual),
           status,
           terminaEm: toIsoFromLocalDateTime(terminaEm),
         });
