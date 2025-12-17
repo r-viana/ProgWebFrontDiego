@@ -61,7 +61,7 @@ export default function LeilaoFormClient({ mode, action }: Props) {
         return;
       }
 
-      const editable = canEdit(item, { isAdmin, userId });
+      const editable = canEdit(item, isAdmin ? 'admin' : 'user', userId);
       if (!editable) {
         setError('Você não tem permissão para editar este leilão.');
         setLoadingItem(false);
