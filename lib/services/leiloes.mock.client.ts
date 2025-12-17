@@ -118,10 +118,10 @@ function normalizeDateInput(d?: string): number | null {
   return Number.isFinite(t) ? t : null;
 }
 
-export function canEdit(leilao: LeilaoMock, opts: { isAdmin: boolean; userId?: string }) {
-  if (opts.isAdmin) return true;
-  if (!opts.userId) return false;
-  return leilao.ownerId === opts.userId;
+export function canEdit(leilao: LeilaoMock, viewerRole: 'admin' | 'user', viewerUserId: string) {
+  if (viewerRole === 'admin') return true;
+  if (!viewerUserId) return false;
+  return leilao.ownerId === viewerUserId;
 }
 
 export async function listLeiloes(params: ListParams): Promise<ListResult> {
