@@ -110,8 +110,6 @@ export default function LeilaoFormClient({ mode, action }: Props) {
           descricao,
           precoInicial: Number(precoInicial),
           terminaEm: toIsoFromLocalDateTime(terminaEm),
-          ownerId: userId,
-          ownerNome: userNome,
         });
       } else {
         if (!id) throw new Error('ID inválido');
