@@ -188,8 +188,8 @@ export async function createLeilao(input: {
   descricao?: string;
   precoInicial: number;
   terminaEm: string; // ISO
-  ownerId: string;
-  ownerNome: string;
+  ownerId?: string;
+  ownerNome?: string;
 }): Promise<LeilaoMock> {
   const all = ensureSeed();
 
@@ -206,7 +206,7 @@ export async function createLeilao(input: {
     status: 'ativo',
     terminaEm: input.terminaEm,
     criadoEm: nowIso,
-    ownerId: input.ownerId,
+    ownerId: input.ownerId || 'user_default',
     ownerNome: input.ownerNome || 'Usuário',
   };
 
