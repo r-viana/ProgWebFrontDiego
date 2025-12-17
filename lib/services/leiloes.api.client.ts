@@ -126,7 +126,7 @@ export async function listLeiloes(params: ListParams): Promise<ListResult> {
   if (params.q) q.set('titulo', params.q);
   if (params.status && params.status !== 'todos') {
     // Mapear status do frontend para o backend
-    let backendStatus = params.status;
+    let backendStatus: string = params.status;
     if (params.status === 'ativo') backendStatus = 'aberto';
     if (params.status === 'finalizado') backendStatus = 'encerrado';
     q.set('status', backendStatus);
@@ -181,6 +181,10 @@ export type CreateLeilaoInput = {
   vendedorId?: number;
 };
 
+export type UpdateLeilaoInput = Partial<CreateLeilaoInput> & {
+  precoAtual?: number;
+};
+
 export async function createLeilao(input: CreateLeilaoInput): Promise<Leilao> {
   const json: any = await apiFetch('/leiloes', {
     method: 'POST',
@@ -199,7 +203,7 @@ export async function createLeilao(input: CreateLeilaoInput): Promise<Leilao> {
   return normalizeLeilao(raw);
 }
 
-export async function updateLeilao(id: string, patch: Partial<CreateLeilaoInput>): Promise<Leilao> {
+export async function updateLeilao(id: string, patch: UpdateLeilaoInput): Promise<Leilao> {
   const json: any = await apiFetch(`/leiloes/${encodeURIComponent(id)}`, {
     method: 'PATCH',
     body: JSON.stringify(patch),

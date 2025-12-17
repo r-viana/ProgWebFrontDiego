@@ -41,9 +41,9 @@ export async function createLeilao(input: api.CreateLeilaoInput): Promise<Leilao
   return mock.createLeilao(input);
 }
 
-export async function updateLeilao(id: string, patch: Partial<api.CreateLeilaoInput>): Promise<Leilao> {
+export async function updateLeilao(id: string, patch: api.UpdateLeilaoInput): Promise<Leilao> {
   const apiResult = await tryApi(() => api.updateLeilao(id, patch));
-  return apiResult ?? mock.updateLeilao(id, patch);
+  return apiResult ?? mock.updateLeilao(id, patch as any);
 }
 
 export async function deleteLeilao(id: string): Promise<void> {
